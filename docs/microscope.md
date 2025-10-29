@@ -7,7 +7,7 @@ A detailed, incremental execution plan. Each step lists **done criteria** and su
 ---
 
 ## Phase 0 — Bootstrap & Infrastructure
-- [ ] Create repo structure and baseline `README.md`, `microscope.md`.
+- [x] Create repo structure and baseline `README.md`, `microscope.md`.
 - [ ] Write base `.env` with ports, credentials (dev-only).
 - [ ] Add `deploy/docker-compose.yml` with: PostgreSQL, Redis, Kafka+ZooKeeper, Mosquitto, NGINX.
 - [ ] Add volumes and basic healthchecks for all infra containers.

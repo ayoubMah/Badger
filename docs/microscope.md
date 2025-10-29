@@ -7,12 +7,24 @@ A detailed, incremental execution plan. Each step lists **done criteria** and su
 ---
 
 ## Phase 0 — Bootstrap & Infrastructure
-- [x] Create repo structure and baseline `README.md`, `microscope.md`.
-- [ ] Write base `.env` with ports, credentials (dev-only).
-- [ ] Add `deploy/docker-compose.yml` with: PostgreSQL, Redis, Kafka+ZooKeeper, Mosquitto, NGINX.
-- [ ] Add volumes and basic healthchecks for all infra containers.
-- [ ] Seed PostgreSQL with `registered_people` table and sample rows.
-  - **Done when:** `docker compose up` starts all infra and `psql` shows seeded data.
+> Goal: `docker compose up` starts all infra and `psql` shows seeded data.
+
+## ✅ Completed
+- [x] PostgreSQL container + seed (`registered_people` table)
+- [x] Redis container healthy
+- [x] Zookeeper + Kafka running
+- [x] Mosquitto MQTT broker configured (`allow_anonymous true`)
+- [x] NGINX health endpoint (`/healthz`) reachable on port 8080
+- [x] Verified connections:
+  - [x] `psql` → 4 seeded users
+  - [x] `redis-cli ping` → `PONG`
+  - [x] `curl localhost:8080/healthz` → `ok`
+
+## 🧠 Learned
+- Compose service dependencies and `healthcheck` usage  
+- Postgres seeding via `/docker-entrypoint-initdb.d`  
+- Basic MQTT pub/sub lifecycle  
+- Understanding early-startup false negatives in healthchecks
 
 ## Phase 1 — Service Skeletons
 - [ ] Scaffold Spring Boot services: `core-operational-backend`, `entrance-cockpit-backend`, `cache-loader-backend` (Java 21).

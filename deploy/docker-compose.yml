@@ -87,6 +87,20 @@ services:
       interval: 10s
       retries: 5
 
+  core-operational-backend:
+    build:
+      context: ../app/services/core-operational-backend
+    container_name: core-operational-backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+
 volumes:
   pgdata:
   redisdata:

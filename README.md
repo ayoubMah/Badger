@@ -71,6 +71,10 @@ A DevOps- and infra-focused simulation of a company entrance system. Employees â
     topics-init.sh
   postgres/
     init.sql
+  mosquitto/
+    config/
+      mosquitto.conf
+
   grafana/ prometheus/ (optional later)
 /docs
   README.md

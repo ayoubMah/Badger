@@ -6,6 +6,73 @@ A DevOps- and infra-focused simulation of a company entrance system. Employees �
 
 ## 🧱 Architecture (high level)
 
+
+```mermaid
+graph TB
+    subgraph "Physical Layer"
+        BR[Badge Reader / MQTT Device]
+    end
+
+    subgraph "Message Broker Layer"
+        MQTT[Mosquitto Broker<br/>Port: 1883]
+        KAFKA[Apache Kafka<br/>Topic: entrance_attempts]
+        ZK[Zookeeper<br/>Port: 2181]
+    end
+
+    subgraph "Application Layer"
+        ECB[Entrance Cockpit Backend<br/>MQTT Consumer & Kafka Producer]
+        COB[Core Operational Backend<br/>Kafka Consumer<br/>Port: 8081]
+    end
+
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>badge_db<br/>Port: 5432)]
+        REDIS[(Redis Cache<br/>Port: 6379)]
+    end
+
+    subgraph "Presentation Layer"
+        NGINX[NGINX Reverse Proxy]
+        DASH[Dashboard UI]
+    end
+
+    %% Physical to Message Broker
+    BR -->|publishes badge scan| MQTT
+    
+    %% MQTT to Entrance Backend
+    MQTT -->|subscribes| ECB
+    
+    %% Entrance Backend to Kafka
+    ECB -->|produces event| KAFKA
+    ZK -.->|manages| KAFKA
+    
+    %% Kafka to Core Backend
+    KAFKA -->|consumes event| COB
+    
+    %% Core Backend to Data Layer
+    COB -->|validates & stores| PG
+    COB -->|caches| REDIS
+    
+    %% Data to Presentation
+    COB -->|REST API| NGINX
+    NGINX -->|serves| DASH
+    
+    %% Query path
+    DASH -.->|queries| NGINX
+    NGINX -.->|/api/people, etc.| COB
+
+    style BR fill:#e1f5ff
+    style MQTT fill:#fff4e6
+    style KAFKA fill:#ffe6f0
+    style ECB fill:#f0e6ff
+    style COB fill:#f0e6ff
+    style PG fill:#e6ffe6
+    style REDIS fill:#e6ffe6
+    style NGINX fill:#ffe6e6
+    style DASH fill:#ffe6e6
+    style ZK fill:#fff4e6
+```
+
+
+
 **Clients & IoT (simulated)**
 - *Entrance Cockpit (Web UI)* — Real‑time dashboard; manual authorize/deny.
 - *Badge Sensor (Mock MQTT client)* — Publishes badge scans.

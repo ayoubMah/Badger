@@ -1,6 +1,8 @@
 package upec.badge.core_operational_backend.controller;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import upec.badge.core_operational_backend.model.RegisteredPerson;
@@ -22,4 +24,13 @@ public class PeopleController {
     public List<RegisteredPerson> all() {
         return repository.findAll();
     }
+
+
+    @GetMapping("/{badgeId}")
+    @Cacheable(value = "people", key = "#badgeId")
+    public RegisteredPerson findByBadge(@PathVariable String badgeId) {
+        return repository.findByBadgeId(badgeId)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+    }
+
 }

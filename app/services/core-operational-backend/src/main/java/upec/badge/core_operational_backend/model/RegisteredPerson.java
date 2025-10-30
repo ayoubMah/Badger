@@ -1,16 +1,27 @@
 package upec.badge.core_operational_backend.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "registered_people")
-public class RegisteredPerson {
+public class RegisteredPerson implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     private UUID id;
+
+    @Column(name = "badge_id")
     private String badgeId;
+
+    @Column(name = "full_name")
     private String fullName;
+
     private String role;
+
+    @Column(name = "is_active")
     private boolean isActive;
 
     public UUID getId() {
